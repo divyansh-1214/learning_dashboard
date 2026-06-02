@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, Sparkles } from "lucide-react";
 import PuzzleCard from "./PuzzleCard";
 
@@ -18,18 +18,27 @@ export default function Streak({
   title = "Learning Activity",
 }: StreakProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const cols = Math.max(6, weeks);
 
   const cells = useMemo(() => {
     const total = cols * 7;
     if (data && data.length >= total) return data.slice(0, total);
+    if (!mounted) {
+      return Array.from({ length: total }, () => 0);
+    }
     return Array.from({ length: total }, (_, i) => {
       const weekend = i % 7 === 0 || i % 7 === 6;
       return weekend
         ? Math.floor(Math.random() * 4)
         : Math.floor(Math.random() * max);
     });
-  }, [data, cols, max]);
+  }, [data, cols, max, mounted]);
 
   const maxVal = Math.max(...cells, 1);
 
@@ -43,6 +52,12 @@ export default function Streak({
       "bg-[#4BC0C8]",
     ][level];
   };
+
+  const topItems = [
+    "Neural Networks",
+    "Linear Algebra",
+    "Reinforcement Learning",
+  ];
 
   const deadlines = [
     { id: 1, title: "Complete React Hooks module", due: "Tomorrow, 11:59 PM" },
@@ -59,7 +74,10 @@ export default function Streak({
           rightEdge={{ type: "cutout", position: "center", radius: 26 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ opacity: { duration: 0.4, delay: 0.2 }, y: { type: "spring", stiffness: 300, damping: 20, delay: 0.2 } }}
+          transition={{
+            opacity: { duration: 0.4, delay: 0.2 },
+            y: { type: "spring", stiffness: 300, damping: 20, delay: 0.2 },
+          }}
           className="rounded-4xl bg-linear-to- from-[#141420] to-[#0d0d18] text-white cursor-pointer"
           style={{ minHeight: "340px" }}
         >
@@ -82,13 +100,20 @@ export default function Streak({
             </header>
 
             {/* overflow-x-auto but overflow-y-visible so tooltips show above */}
-            <div className="overflow-x-auto pb-2" style={{ overflowY: "visible" }}>
+            <div
+              className="overflow-x-auto pb-2"
+              style={{ overflowY: "visible" }}
+            >
               <div className="min-w-175">
                 <div
                   role="grid"
                   aria-label="Learning activity heatmap"
                   className="relative isolate grid grid-flow-col grid-rows-7 gap-1.25"
-                  style={{ gridTemplateColumns: `repeat(${cols}, 13px)`, paddingTop: "40px", marginTop: "-40px" }}
+                  style={{
+                    gridTemplateColumns: `repeat(${cols}, 13px)`,
+                    paddingTop: "40px",
+                    marginTop: "-40px",
+                  }}
                 >
                   {cells.map((value, index) => (
                     <div
@@ -113,6 +138,33 @@ export default function Streak({
                 </div>
               </div>
             </div>
+            <section
+              aria-label="Top learning topics"
+              className="mt-6 rounded-2xl border border-white/10 bg-white/[0.02] p-4"
+            >
+              <header className="mb-3 flex items-center justify-between">
+                <h3 className="text-[12px] font-bold uppercase tracking-[0.16em] text-white/70">
+                  Top Learning Topics
+                </h3>
+                <span className="rounded-full border border-[#4BC0C8]/30 bg-[#4BC0C8]/10 px-2 py-0.5 text-[10px] font-semibold text-[#79d9de]">
+                  This Week
+                </span>
+              </header>
+
+              <ul className="space-y-2.5">
+                {topItems.map((item, index) => (
+                  <li
+                    className="group flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.015] px-3 py-2.5 transition hover:border-[#4BC0C8]/30 hover:bg-[#4BC0C8]/8"
+                    key={item}
+                  >
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/15 bg-white/[0.03] text-[11px] font-bold text-white/80 group-hover:border-[#4BC0C8]/40 group-hover:text-[#95e4e8]">
+                      {index + 1}
+                    </span>
+                    <p className="text-sm font-medium text-white/85">{item}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
           </div>
         </PuzzleCard>
 
@@ -121,7 +173,10 @@ export default function Streak({
           leftEdge={{ type: "tab", position: "center", radius: 26 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ opacity: { duration: 0.4, delay: 0.3 }, y: { type: "spring", stiffness: 300, damping: 20, delay: 0.3 } }}
+          transition={{
+            opacity: { duration: 0.4, delay: 0.3 },
+            y: { type: "spring", stiffness: 300, damping: 20, delay: 0.3 },
+          }}
           className="rounded-4xl bg-linear-to-b from-[#141420] to-[#0d0d18] cursor-pointer"
           style={{ minHeight: "340px" }}
           aria-labelledby="deadlines-heading"
@@ -172,7 +227,10 @@ export default function Streak({
             <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
               <span>Less</span>
               {[0, 1, 2, 3, 4].map((l) => (
-                <span key={l} className={`h-2.5 w-2.5 rounded-[2px] ${levelClass(l * Math.floor(maxVal / 4))}`} />
+                <span
+                  key={l}
+                  className={`h-2.5 w-2.5 rounded-[2px] ${levelClass(l * Math.floor(maxVal / 4))}`}
+                />
               ))}
               <span>More</span>
             </div>
@@ -183,7 +241,9 @@ export default function Streak({
                 role="grid"
                 aria-label="Learning activity heatmap"
                 className="grid grid-flow-col grid-rows-7 gap-[4px]"
-                style={{ gridTemplateColumns: `repeat(${Math.min(cols, 40)}, 11px)` }}
+                style={{
+                  gridTemplateColumns: `repeat(${Math.min(cols, 40)}, 11px)`,
+                }}
               >
                 {cells.slice(0, Math.min(cols, 40) * 7).map((value, index) => (
                   <div
@@ -195,18 +255,53 @@ export default function Streak({
               </div>
             </div>
           </div>
+
+          <section
+            aria-label="Top learning topics"
+            className="mt-5 rounded-xl border border-white/10 bg-white/[0.02] p-3.5"
+          >
+            <header className="mb-2.5 flex items-center justify-between">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/70">
+                Top Learning Topics
+              </h3>
+              <span className="rounded-full border border-[#4BC0C8]/30 bg-[#4BC0C8]/10 px-2 py-0.5 text-[10px] font-semibold text-[#79d9de]">
+                This Week
+              </span>
+            </header>
+
+            <ul className="space-y-2">
+              {topItems.map((item, index) => (
+                <li
+                  key={`${item}-mobile`}
+                  className="flex items-center gap-2.5 rounded-lg border border-white/8 bg-white/[0.015] px-2.5 py-2"
+                >
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded-sm border border-white/15 bg-white/[0.03] text-[10px] font-bold text-white/80">
+                    {index + 1}
+                  </span>
+                  <p className="text-[13px] font-medium text-white/85">{item}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
 
         {/* Upcoming Deadlines */}
         <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#141420] to-[#0d0d18] p-6">
-          <h3 className="text-xl font-bold text-white mb-5">Upcoming Deadlines</h3>
+          <h3 className="text-xl font-bold text-white mb-5">
+            Upcoming Deadlines
+          </h3>
           <ul className="space-y-3">
             {deadlines.map((task) => (
-              <li key={task.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+              <li
+                key={task.id}
+                className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
+              >
                 <article className="flex items-start gap-3">
                   <div className="w-4 h-4 rounded-[3px] border-2 border-white/15 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-white/90 text-[13px]">{task.title}</h4>
+                    <h4 className="font-semibold text-white/90 text-[13px]">
+                      {task.title}
+                    </h4>
                     <time className="mt-1 flex items-center gap-1 text-[11px] font-bold text-orange-400/80">
                       <CalendarDays size={11} />
                       {task.due}

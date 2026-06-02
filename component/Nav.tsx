@@ -2,7 +2,7 @@
 
 import { Bell, CircleQuestionMark, Search, Menu } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
-
+import Image from "next/image";
 export default function Nav() {
   const { toggleSidebar } = useSidebar();
 
@@ -49,8 +49,13 @@ export default function Nav() {
         >
           <CircleQuestionMark size={18} aria-hidden="true" />
         </button>
-
-        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex-shrink-0" />
+        <Image
+          src="/profile.png"
+          alt="User Avatar"
+          width={40}
+          height={40}
+          className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover shrink-0"
+        />
       </div>
     </nav>
   );

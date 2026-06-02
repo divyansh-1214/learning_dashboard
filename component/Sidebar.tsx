@@ -14,11 +14,11 @@ export default function Sidebar() {
   const { isCollapsed, toggleSidebar } = useSidebar();
 
   const links = [
-    { name: "Dashboard", href: "#", icon: <LayoutDashboard size={18} className="flex-shrink-0" /> },
-    { name: "Courses", href: "#", icon: <GraduationCap size={18} className="flex-shrink-0" /> },
-    { name: "Analytics", href: "#", icon: <ChartBarIncreasing size={18} className="flex-shrink-0" /> },
-    { name: "Settings", href: "#", icon: <Settings size={18} className="flex-shrink-0" /> },
-    { name: "Profile", href: "#", icon: <User size={18} className="flex-shrink-0" /> },
+    { name: "Dashboard", href: "#", icon: <LayoutDashboard size={18} className="shrink-0" /> },
+    { name: "Courses", href: "#", icon: <GraduationCap size={18} className="shrink-0" /> },
+    { name: "Analytics", href: "#", icon: <ChartBarIncreasing size={18} className="shrink-0" /> },
+    { name: "Settings", href: "#", icon: <Settings size={18} className="shrink-0" /> },
+    { name: "Profile", href: "#", icon: <User size={18} className="shrink-0" /> },
   ];
 
   return (
@@ -32,7 +32,7 @@ export default function Sidebar() {
       >
         <header className="flex items-center justify-between gap-3 mb-8">
           <span className="flex items-center gap-3 overflow-hidden">
-            <GraduationCap size={28} className="flex-shrink-0 text-indigo-400" />
+            <GraduationCap size={28} className="shrink-0 text-indigo-400" />
             <span className={`text-lg font-bold leading-tight transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? "w-0 opacity-0 pointer-events-none" : "w-0 opacity-0 pointer-events-none lg:w-auto lg:opacity-100"
               }`}>
               Next - <span className="text-[#ADC6FF]">Gen</span>
